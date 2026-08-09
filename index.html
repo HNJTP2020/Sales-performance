@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>销售业绩分析</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 600px;
+            text-align: center;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+        }
+        
+        .status {
+            background: #f0f4ff;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+        
+        .status h2 {
+            color: #667eea;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        
+        .status p {
+            color: #555;
+            line-height: 1.6;
+            margin: 8px 0;
+        }
+        
+        .status-item {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+        }
+        
+        .status-check {
+            color: #28a745;
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+        
+        .links {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .link-btn {
+            display: inline-block;
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            font-weight: 600;
+        }
+        
+        .link-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #999;
+            font-size: 0.9em;
+        }
+        
+        .emoji {
+            font-size: 2em;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 销售业绩分析平台</h1>
+        <p class="subtitle">Sales Performance Dashboard</p>
+        
+        <div class="status">
+            <h2>✅ 网站已上线</h2>
+            <div class="status-item">
+                <span class="status-check">✓</span>
+                <span>GitHub Pages 已成功部署</span>
+            </div>
+            <div class="status-item">
+                <span class="status-check">✓</span>
+                <span>网站服务器运行正常</span>
+            </div>
+            <div class="status-item">
+                <span class="status-check">✓</span>
+                <span>所有资源已加载完毕</span>
+            </div>
+        </div>
+        
+        <div class="links">
+            <a href="https://github.com/HNJTP2020/Sales-performance" class="link-btn">
+                📁 查看仓库
+            </a>
+            <a href="https://github.com/HNJTP2020/Sales-performance/settings/pages" class="link-btn">
+                ⚙️ Pages 设置
+            </a>
+        </div>
+        
+        <div class="footer">
+            <p>由 GitHub Pages 驱动 | 最后更新: 2026年8月9日</p>
+        </div>
+    </div>
+</body>
+</html>
