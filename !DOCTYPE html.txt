@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Toppen Sales Dashboard</title>
+
+"></script>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Segoe UI,sans-serif;
+}
+
+body{
+    background:#0f172a;
+    color:white;
+    padding:20px;
+}
+
+h1{
+    text-align:center;
+    margin-bottom:20px;
+    color:#FFD700;
+}
+
+.card{
+    background:#1e293b;
+    padding:20px;
+    border-radius:15px;
+    margin-bottom:20px;
+    box-shadow:0 0 15px rgba(0,0,0,0.3);
+}
+
+.podium{
+    display:flex;
+    justify-content:center;
+    align-items:flex-end;
+    gap:20px;
+    flex-wrap:wrap;
+}
+
+.rank-box{
+    width:200px;
+    text-align:center;
+    border-radius:15px;
+    padding:20px;
+    color:black;
+}
+
+.gold{
+    background:#FFD700;
+    height:250px;
+}
+
+.silver{
+    background:#C0C0C0;
+    height:200px;
+}
+
+.bronze{
+    background:#CD7F32;
+    height:170px;
+}
+
+.summary{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:15px;
+}
+
+.summary-card{
+    background:#334155;
+    padding:20px;
+    border-radius:12px;
+    text-align:center;
+}
+
+.summary-card h2{
+    color:#FFD700;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th{
+    background:#334155;
+}
+
+th,td{
+    padding:12px;
+    text-align:center;
+    border:1px solid #475569;
+}
+
+input{
+    padding:10px;
+    border:none;
+    border-radius:8px;
+    width:100%;
+}
+
+button{
+    background:#FFD700;
+    color:black;
+    border:none;
+    padding:12px 20px;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+button:hover{
+    background:#ffea61;
+}
+
+.today{
+    text-align:center;
+    font-size:24px;
+    color:#FFD700;
+}
+
+canvas{
+    background:white;
+    border-radius:15px;
+    padding:10px;
+}
+
+</style>
+</head>
+<body>
+
+<h1>🏆 TOPPEN SALES DASHBOARD</h1>
+
+<div class="card">
+<h2 style="text-align:center;margin-bottom:20px;">Top Performer</h2>
+
+<div class="podium" id="podium">
+</div>
+</div>
+
+<div class="card">
+<div class="summary">
+
+<div class="summary-card">
+<h2 id="totalSales">RM0</h2>
+<p>Total MTD Sales</p>
+</div>
+
+<div class="summary-card">
+<h2 id="budgetTotal">RM0</h2>
+<p>Total Budget</p>
+</div>
+
+<div class="summary-card">
+<h2 id="achievement">0%</h2>
+<p>Store Achievement</p>
+</div>
+
+</div>
+</div>
+
+<div class="card">
+<div class="today" id="todayChampion">
+🔥 Today's Champion
+</div>
+</div>
+
+<div class="card">
+
+<h2 style="margin-bottom:20px">Add Daily Sales</h2>
+
+<table>
+<tr>
+<th>Staff</th>
+<th>Today's Sales</th>
+</tr>
+
+<tr>
+<td>Queenie</td>
+<td><input type="number" id="q"></td>
+</tr>
+
+<tr>
+<td>Faried</td>
+<td><input type="number" id="f"></td>
+</tr>
+
+<tr>
+<td>Liyana</td>
+<td><input type="number" id="l"></td>
+</tr>
+
+<tr>
+<td>Aniq</td>
+<td><input type="number" id="a"></td>
+</tr>
+
+<tr>
+<td>Syahrul</td>
+<td><input type="number" id="s"></td>
+</tr>
+
+</table>
+
+<br>
+
+<button onclick="addSales()">
+Update Sales
+</button>
+
+</div>
+
+<div class="card">
+<h2 style="margin-bottom:15px">📊 Sales Ranking</h2>
+<canvas id="salesChart"></canvas>
+</div>
+
+<script>
+
+let staff = [
+
+{
+name:"Queenie",
+budget:150000,
+sales:54749
+},
+
+{
+name:"Faried",
+budget:176318,
+sales:48570
+},
+
+{
+name:"Liyana",
+budget:160000,
+sales:46419
+},
+
+{
+name:"Aniq",
+budget:160000,
+sales:23456
+},
+
+{
+name:"Syahrul",
+budget:80000,
+sales:18614
+}
+
+];
+
+let chart;
+
+function updateDashboard(){
+
+staff.sort((a,b)=>b.sales-a.sales);
+
+let podiumHTML = `
+<div class="rank-box silver">
+<h2>🥈 ${staff[1].name}</h2>
+<h3>RM${staff[1].sales.toLocaleString()}</h3>
+</div>
+
+<div class="rank-box gold">
+<h2>👑 ${staff[0].name}</h2>
+<h3>RM${staff[0].sales.toLocaleString()}</h3>
+</div>
+
+<div class="rank-box bronze">
+<h2>🥉 ${staff[2].name}</h2>
+<h3>RM${staff[2].sales.toLocaleString()}</h3>
+</div>
+`;
+
+document.getElementById("podium").innerHTML = podiumHTML;
+
+let totalSales = staff.reduce((a,b)=>a+b.sales,0);
+let totalBudget = staff.reduce((a,b)=>a+b.budget,0);
+
+document.getElementById("totalSales").innerHTML =
+"RM"+totalSales.toLocaleString();
+
+document.getElementById("budgetTotal").innerHTML =
+"RM"+totalBudget.toLocaleString();
+
+document.getElementById("achievement").innerHTML =
+((totalSales/totalBudget)*100).toFixed(1)+"%";
+
+document.getElementById("todayChampion").innerHTML =
+`🔥 Champion : ${staff[0].name} | RM${staff[0].sales.toLocaleString()}`;
+
+drawChart();
+}
+
+function drawChart(){
+
+let labels = staff.map(x=>x.name);
+let values = staff.map(x=>x.sales);
+
+let colors = [
+"#FFD700",
+"#C0C0C0",
+"#CD7F32",
+"#3B82F6",
+"#22C55E"
+];
+
+if(chart){
+chart.destroy();
+}
+
+chart = new Chart(
+document.getElementById("salesChart"),
+{
+type:"bar",
+data:{
+labels:labels,
+datasets:[
+{
+label:"MTD Sales",
+data:values,
+backgroundColor:colors
+}
+]
+},
+options:{
+responsive:true,
+plugins:{
+legend:{
+display:false
+}
+}
+}
+}
+);
+}
+
+function addSales(){
+
+staff[0].sales += Number(document.getElementById("q").value || 0);
+staff[1].sales += Number(document.getElementById("f").value || 0);
+staff[2].sales += Number(document.getElementById("l").value || 0);
+staff[3].sales += Number(document.getElementById("a").value || 0);
+staff[4].sales += Number(document.getElementById("s").value || 0);
+
+document.querySelectorAll("input").forEach(i=>i.value="");
+
+updateDashboard();
+
+}
+
+updateDashboard();
+
+</script>
+
+</body>
+</html>
