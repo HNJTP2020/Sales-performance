@@ -1,494 +1,505 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Toppen Sales Dashboard</title>
-
-https://cdn.jsdelivr.net/npm/chart.js
+<title>Toppen KPI Dashboard</title>
 
 <style>
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:'Segoe UI',sans-serif;
-}
-
 body{
-    background:#0f172a;
-    color:white;
-    padding:20px;
+font-family:Segoe UI,Arial;
+background:#f5f7fb;
+margin:20px;
+color:#333;
 }
 
 h1{
-    text-align:center;
-    color:#FFD700;
-    margin-bottom:25px;
+text-align:center;
+color:#003366;
 }
 
 .card{
-    background:#1e293b;
-    border-radius:20px;
-    padding:20px;
-    margin-bottom:20px;
-    box-shadow:0 10px 25px rgba(0,0,0,0.3);
+background:white;
+padding:20px;
+border-radius:15px;
+box-shadow:0 2px 10px rgba(0,0,0,.1);
+margin-bottom:20px;
 }
 
-.summary{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:15px;
+.kpi{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+gap:15px;
 }
 
-.summary-card{
-    background:#334155;
-    text-align:center;
-    border-radius:15px;
-    padding:20px;
+.kpi-box{
+padding:15px;
+border-radius:12px;
+color:white;
+font-weight:bold;
+text-align:center;
 }
 
-.summary-card h2{
-    color:#FFD700;
-}
+.sales{background:#2563eb;}
+.pc{background:#16a34a;}
+.tech{background:#f97316;}
+.tm{background:#7c3aed;}
+.norton{background:#eab308;color:black;}
+.belkin{background:#0891b2;}
 
-.podium{
-    display:flex;
-    justify-content:center;
-    align-items:flex-end;
-    gap:20px;
-    flex-wrap:wrap;
-}
-
-.rank-box{
-    width:200px;
-    text-align:center;
-    color:black;
-    border-radius:15px;
-    padding:15px;
-}
-
-.gold{
-    background:#FFD700;
-    height:250px;
-}
-
-.silver{
-    background:#C0C0C0;
-    height:190px;
-}
-
-.bronze{
-    background:#CD7F32;
-    height:150px;
-}
-
-.champion{
-    text-align:center;
-    font-size:28px;
-    color:#FFD700;
-}
-
-.staff-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-    gap:15px;
-}
-
-.staff-card{
-    background:#334155;
-    padding:15px;
-    border-radius:12px;
-}
-
-.progress{
-    background:#1e293b;
-    height:18px;
-    border-radius:20px;
-    overflow:hidden;
-    margin-top:10px;
-}
-
-.progress-bar{
-    height:100%;
-    background:linear-gradient(90deg,#FFD700,#f59e0b);
-    text-align:right;
-    padding-right:8px;
-    color:black;
-    font-size:12px;
-    font-weight:bold;
-}
-
-table{
-    width:100%;
-    border-collapse:collapse;
-}
-
-th,td{
-    border:1px solid #475569;
-    padding:10px;
-    text-align:center;
-}
-
-th{
-    background:#334155;
-}
-
-input{
-    width:100%;
-    padding:10px;
-    border:none;
-    border-radius:8px;
+input,select{
+padding:10px;
+margin:5px;
+border:1px solid #ddd;
+border-radius:8px;
 }
 
 button{
-    background:#FFD700;
-    border:none;
-    padding:12px 22px;
-    border-radius:10px;
-    font-weight:bold;
-    margin-top:15px;
-    cursor:pointer;
+background:#2563eb;
+color:white;
+border:none;
+padding:10px 15px;
+border-radius:8px;
+cursor:pointer;
 }
 
 button:hover{
-    background:#ffe45c;
+background:#1d4ed8;
 }
 
-canvas{
-    background:white;
-    border-radius:15px;
-    padding:10px;
+table{
+width:100%;
+border-collapse:collapse;
 }
 
-@media(max-width:768px){
-
-.gold,.silver,.bronze{
-    height:auto;
+th{
+background:#003366;
+color:white;
 }
 
-.rank-box{
-    width:100%;
+th,td{
+padding:10px;
+border:1px solid #ddd;
+text-align:center;
 }
 
+.rank1{
+background:#FFD700;
+font-weight:bold;
+}
+
+.rank2{
+background:#C0C0C0;
+font-weight:bold;
+}
+
+.rank3{
+background:#CD7F32;
+color:white;
+font-weight:bold;
 }
 
 </style>
 </head>
+
 <body>
 
-<h1>🏆 TOPPEN SALES DASHBOARD</h1>
-
-<div class="card">
-<div class="champion" id="championCard">
-👑 Champion
-</div>
-</div>
+<h1>🏆 TOPPEN PERFORMANCE DASHBOARD</h1>
 
 <div class="card">
 
-<div class="summary">
+<div class="kpi">
 
-<div class="summary-card">
-<h2 id="totalSales">RM0</h2>
-<p>Total MTD Sales</p>
+<div class="kpi-box sales">
+Sales
+<br>
+<span id="totalSales">RM0</span>
 </div>
 
-<div class="summary-card">
-<h2 id="totalBudget">RM0</h2>
-<p>Total Budget</p>
+<div class="kpi-box pc">
+Product Care
+<br>
+<span id="totalPC">RM0</span>
 </div>
 
-<div class="summary-card">
-<h2 id="storeAchievement">0%</h2>
-<p>Store Achievement</p>
+<div class="kpi-box tech">
+TechCrew
+<br>
+<span id="totalTech">RM0</span>
+</div>
+
+<div class="kpi-box tm">
+Trend Micro
+<br>
+<span id="totalTM">RM0</span>
+</div>
+
+<div class="kpi-box norton">
+Norton
+<br>
+<span id="totalNorton">RM0</span>
+</div>
+
+<div class="kpi-box belkin">
+Belkin
+<br>
+<span id="totalBelkin">RM0</span>
 </div>
 
 </div>
-
-</div>
-
-<div class="card">
-
-<h2 style="text-align:center;margin-bottom:20px">
-🥇 Top 3 Leaderboard
-</h2>
-
-<div class="podium" id="podium"></div>
-
-</div>
-
-<div class="card">
-
-<h2 style="margin-bottom:15px">
-🎯 Staff Achievement
-</h2>
-
-<div id="staffCards" class="staff-grid"></div>
 
 </div>
 
 <div class="card">
 
-<h2 style="margin-bottom:15px">
-➕ Add Daily Sales
-</h2>
+<h2>➕ Daily Entry</h2>
 
-<table>
+<input type="date" id="date">
 
+<select id="staff">
+<option>Queenie</option>
+<option>Faried</option>
+<option>Liyana</option>
+<option>Aniq</option>
+<option>Syahrul</option>
+</select>
+
+<input type="number" id="sales" placeholder="Sales">
+<input type="number" id="pc" placeholder="Product Care">
+<input type="number" id="tech" placeholder="TechCrew">
+<input type="number" id="tm" placeholder="Trend Micro">
+<input type="number" id="norton" placeholder="Norton">
+<input type="number" id="belkin" placeholder="Belkin">
+
+<button onclick="saveRecord()">Save</button>
+
+</div>
+
+<div class="card">
+
+<h2>📅 Filter</h2>
+
+<select id="monthFilter" onchange="render()">
+<option value="all">All Months</option>
+</select>
+
+<select id="staffFilter" onchange="render()">
+<option value="all">All Staff</option>
+<option>Queenie</option>
+<option>Faried</option>
+<option>Liyana</option>
+<option>Aniq</option>
+<option>Syahrul</option>
+</select>
+
+</div>
+
+<div class="card">
+
+<h2>🥇 Sales Ranking</h2>
+
+<table id="rankingTable">
+
+<thead>
 <tr>
+<th>Rank</th>
 <th>Staff</th>
-<th>Sales (RM)</th>
+<th>Total Sales</th>
 </tr>
+</thead>
 
-<tr>
-<td>Queenie</td>
-<td><input type="number" id="q"></td>
-</tr>
-
-<tr>
-<td>Faried</td>
-<td><input type="number" id="f"></td>
-</tr>
-
-<tr>
-<td>Liyana</td>
-<td><input type="number" id="l"></td>
-</tr>
-
-<tr>
-<td>Aniq</td>
-<td><input type="number" id="a"></td>
-</tr>
-
-<tr>
-<td>Syahrul</td>
-<td><input type="number" id="s"></td>
-</tr>
+<tbody></tbody>
 
 </table>
 
-<button onclick="addSales()">Update Sales</button>
-
 </div>
 
 <div class="card">
 
-<h2 style="margin-bottom:15px">
-📊 Sales Ranking
-</h2>
+<h2>📋 Daily Records</h2>
 
-<canvas id="salesChart"></canvas>
+<table id="historyTable">
+
+<thead>
+
+<tr>
+<th>Date</th>
+<th>Staff</th>
+<th>Sales</th>
+<th>PC</th>
+<th>TechCrew</th>
+<th>TM</th>
+<th>Norton</th>
+<th>Belkin</th>
+<th>Delete</th>
+</tr>
+
+</thead>
+
+<tbody></tbody>
+
+</table>
 
 </div>
 
 <script>
 
-let defaultData = [
+let records =
+JSON.parse(localStorage.getItem("toppenRecords"))
+|| [];
 
-{
-name:"Queenie",
-budget:150000,
-sales:54749
-},
+function saveRecord(){
 
-{
-name:"Faried",
-budget:176318,
-sales:48570
-},
+let date =
+document.getElementById("date").value;
 
-{
-name:"Liyana",
-budget:160000,
-sales:46419
-},
-
-{
-name:"Aniq",
-budget:160000,
-sales:23456
-},
-
-{
-name:"Syahrul",
-budget:80000,
-sales:18614
+if(!date){
+alert("Please select date");
+return;
 }
 
-];
+records.push({
+
+date:date,
+month:date.substring(0,7),
+
+staff:document.getElementById("staff").value,
+
+sales:Number(document.getElementById("sales").value||0),
+
+pc:Number(document.getElementById("pc").value||0),
+
+tech:Number(document.getElementById("tech").value||0),
+
+tm:Number(document.getElementById("tm").value||0),
+
+norton:Number(document.getElementById("norton").value||0),
+
+belkin:Number(document.getElementById("belkin").value||0)
+
+});
+
+saveStorage();
+populateMonths();
+render();
+
+}
+
+function saveStorage(){
+
+localStorage.setItem(
+"toppenRecords",
+JSON.stringify(records)
+);
+
+}
+
+function deleteRecord(index){
+
+if(confirm("Delete this record?")){
+
+records.splice(index,1);
+
+saveStorage();
+populateMonths();
+render();
+
+}
+
+}
+
+function populateMonths(){
+
+let months =
+[...new Set(records.map(x=>x.month))];
+
+let select =
+document.getElementById("monthFilter");
+
+select.innerHTML =
+'<option value="all">All Months</option>';
+
+months.forEach(m=>{
+
+select.innerHTML +=
+`<option value="${m}">
+${m}
+</option>`;
+
+});
+
+}
+
+function render(){
+
+let month =
+document.getElementById("monthFilter").value;
 
 let staff =
-JSON.parse(localStorage.getItem("salesData"))
-|| defaultData;
+document.getElementById("staffFilter").value;
 
-let chart;
+let filtered =
+records.filter(r=>{
 
-function saveData(){
-localStorage.setItem(
-"salesData",
-JSON.stringify(staff)
-);
+let okMonth =
+month==="all" ||
+r.month===month;
+
+let okStaff =
+staff==="all" ||
+r.staff===staff;
+
+return okMonth && okStaff;
+
+});
+
+renderHistory(filtered);
+renderRanking(filtered);
+renderKPI(filtered);
+
 }
 
-function updateDashboard(){
+function renderHistory(data){
 
-staff.sort((a,b)=>b.sales-a.sales);
+let body =
+document.querySelector(
+"#historyTable tbody"
+);
 
-document.getElementById("championCard").innerHTML =
-`👑 Monthly Champion<br>
-<b>${staff[0].name}</b><br>
-RM ${staff[0].sales.toLocaleString()}`;
+body.innerHTML="";
 
-let totalSales =
-staff.reduce((sum,s)=>sum+s.sales,0);
+data.forEach((r,index)=>{
 
-let totalBudget =
-staff.reduce((sum,s)=>sum+s.budget,0);
+body.innerHTML += `
 
-document.getElementById("totalSales").innerHTML =
-"RM "+totalSales.toLocaleString();
+<tr>
 
-document.getElementById("totalBudget").innerHTML =
-"RM "+totalBudget.toLocaleString();
+<td>${r.date}</td>
 
-document.getElementById("storeAchievement").innerHTML =
-((totalSales/totalBudget)*100).toFixed(1)+"%";
+<td>${r.staff}</td>
 
-document.getElementById("podium").innerHTML =
+<td>${r.sales}</td>
 
-`
-<div class="rank-box silver">
-<h2>🥈 ${staff[1].name}</h2>
-<p>RM ${staff[1].sales.toLocaleString()}</p>
-</div>
+<td>${r.pc}</td>
 
-<div class="rank-box gold">
-<h2>👑 ${staff[0].name}</h2>
-<p>RM ${staff[0].sales.toLocaleString()}</p>
-</div>
+<td>${r.tech}</td>
 
-<div class="rank-box bronze">
-<h2>🥉 ${staff[2].name}</h2>
-<p>RM ${staff[2].sales.toLocaleString()}</p>
-</div>
-`;
+<td>${r.tm}</td>
 
-let cards = "";
+<td>${r.norton}</td>
 
-staff.forEach(s=>{
+<td>${r.belkin}</td>
 
-let ach =
-((s.sales/s.budget)*100).toFixed(1);
+<td>
+<button onclick="deleteRecord(${index})">
+🗑
+</button>
+</td>
 
-cards +=
+</tr>
 
-`
-<div class="staff-card">
-
-<h3>${s.name}</h3>
-
-<p>Budget : RM ${s.budget.toLocaleString()}</p>
-
-<p>Sales : RM ${s.sales.toLocaleString()}</p>
-
-<p>Achievement : ${ach}%</p>
-
-<div class="progress">
-<div class="progress-bar"
-style="width:${Math.min(ach,100)}%">
-${ach}%
-</div>
-</div>
-
-</div>
 `;
 
 });
 
-document.getElementById("staffCards").innerHTML =
-cards;
-
-drawChart();
-saveData();
-
 }
 
-function drawChart(){
+function renderRanking(data){
 
-let labels =
-staff.map(x=>x.name);
+let totals = {};
 
-let values =
-staff.map(x=>x.sales);
+data.forEach(r=>{
 
-if(chart){
-chart.destroy();
-}
+if(!totals[r.staff])
+totals[r.staff]=0;
 
-chart = new Chart(
-document.getElementById("salesChart"),
-{
-type:'bar',
+totals[r.staff]+=r.sales;
 
-data:{
-labels:labels,
+});
 
-datasets:[{
-label:'MTD Sales',
-data:values,
+let ranking =
+Object.entries(totals)
+.sort((a,b)=>b[1]-a[1]);
 
-backgroundColor:[
-'#FFD700',
-'#C0C0C0',
-'#CD7F32',
-'#3B82F6',
-'#22C55E'
-]
-}]
-},
-
-options:{
-responsive:true,
-
-plugins:{
-legend:{
-display:false
-}
-}
-}
-}
+let body =
+document.querySelector(
+"#rankingTable tbody"
 );
 
+body.innerHTML="";
+
+ranking.forEach((r,i)=>{
+
+let cls="";
+
+if(i===0) cls="rank1";
+if(i===1) cls="rank2";
+if(i===2) cls="rank3";
+
+body.innerHTML += `
+
+<tr class="${cls}">
+
+<td>${i+1}</td>
+
+<td>${r[0]}</td>
+
+<td>
+RM ${r[1].toLocaleString()}
+</td>
+
+</tr>
+
+`;
+
+});
+
 }
 
-function addSales(){
+function renderKPI(data){
 
-staff.find(x=>x.name==="Queenie").sales +=
-Number(document.getElementById("q").value||0);
+let sales=0;
+let pc=0;
+let tech=0;
+let tm=0;
+let norton=0;
+let belkin=0;
 
-staff.find(x=>x.name==="Faried").sales +=
-Number(document.getElementById("f").value||0);
+data.forEach(r=>{
 
-staff.find(x=>x.name==="Liyana").sales +=
-Number(document.getElementById("l").value||0);
+sales+=r.sales;
+pc+=r.pc;
+tech+=r.tech;
+tm+=r.tm;
+norton+=r.norton;
+belkin+=r.belkin;
 
-staff.find(x=>x.name==="Aniq").sales +=
-Number(document.getElementById("a").value||0);
+});
 
-staff.find(x=>x.name==="Syahrul").sales +=
-Number(document.getElementById("s").value||0);
+document.getElementById("totalSales").innerText =
+"RM "+sales.toLocaleString();
 
-document.querySelectorAll("input")
-.forEach(i=>i.value="");
+document.getElementById("totalPC").innerText =
+"RM "+pc.toLocaleString();
 
-updateDashboard();
+document.getElementById("totalTech").innerText =
+"RM "+tech.toLocaleString();
+
+document.getElementById("totalTM").innerText =
+"RM "+tm.toLocaleString();
+
+document.getElementById("totalNorton").innerText =
+"RM "+norton.toLocaleString();
+
+document.getElementById("totalBelkin").innerText =
+"RM "+belkin.toLocaleString();
 
 }
 
-updateDashboard();
+populateMonths();
+render();
 
 </script>
 
