@@ -1,11 +1,12 @@
-<html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
 <title>Toppen Sales Dashboard</title>
 
-"></script>
+https://cdn.jsdelivr.net/npm/chart.js
 
 <style>
 
@@ -13,7 +14,7 @@
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family:Segoe UI,sans-serif;
+    font-family:'Segoe UI',sans-serif;
 }
 
 body{
@@ -24,16 +25,33 @@ body{
 
 h1{
     text-align:center;
-    margin-bottom:20px;
     color:#FFD700;
+    margin-bottom:25px;
 }
 
 .card{
     background:#1e293b;
+    border-radius:20px;
     padding:20px;
-    border-radius:15px;
     margin-bottom:20px;
-    box-shadow:0 0 15px rgba(0,0,0,0.3);
+    box-shadow:0 10px 25px rgba(0,0,0,0.3);
+}
+
+.summary{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:15px;
+}
+
+.summary-card{
+    background:#334155;
+    text-align:center;
+    border-radius:15px;
+    padding:20px;
+}
+
+.summary-card h2{
+    color:#FFD700;
 }
 
 .podium{
@@ -47,9 +65,9 @@ h1{
 .rank-box{
     width:200px;
     text-align:center;
-    border-radius:15px;
-    padding:20px;
     color:black;
+    border-radius:15px;
+    padding:15px;
 }
 
 .gold{
@@ -59,29 +77,48 @@ h1{
 
 .silver{
     background:#C0C0C0;
-    height:200px;
+    height:190px;
 }
 
 .bronze{
     background:#CD7F32;
-    height:170px;
+    height:150px;
 }
 
-.summary{
+.champion{
+    text-align:center;
+    font-size:28px;
+    color:#FFD700;
+}
+
+.staff-grid{
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
     gap:15px;
 }
 
-.summary-card{
+.staff-card{
     background:#334155;
-    padding:20px;
+    padding:15px;
     border-radius:12px;
-    text-align:center;
 }
 
-.summary-card h2{
-    color:#FFD700;
+.progress{
+    background:#1e293b;
+    height:18px;
+    border-radius:20px;
+    overflow:hidden;
+    margin-top:10px;
+}
+
+.progress-bar{
+    height:100%;
+    background:linear-gradient(90deg,#FFD700,#f59e0b);
+    text-align:right;
+    padding-right:8px;
+    color:black;
+    font-size:12px;
+    font-weight:bold;
 }
 
 table{
@@ -89,47 +126,53 @@ table{
     border-collapse:collapse;
 }
 
+th,td{
+    border:1px solid #475569;
+    padding:10px;
+    text-align:center;
+}
+
 th{
     background:#334155;
 }
 
-th,td{
-    padding:12px;
-    text-align:center;
-    border:1px solid #475569;
-}
-
 input{
+    width:100%;
     padding:10px;
     border:none;
     border-radius:8px;
-    width:100%;
 }
 
 button{
     background:#FFD700;
-    color:black;
     border:none;
-    padding:12px 20px;
+    padding:12px 22px;
     border-radius:10px;
-    cursor:pointer;
     font-weight:bold;
+    margin-top:15px;
+    cursor:pointer;
 }
 
 button:hover{
-    background:#ffea61;
-}
-
-.today{
-    text-align:center;
-    font-size:24px;
-    color:#FFD700;
+    background:#ffe45c;
 }
 
 canvas{
     background:white;
     border-radius:15px;
     padding:10px;
+}
+
+@media(max-width:768px){
+
+.gold,.silver,.bronze{
+    height:auto;
+}
+
+.rank-box{
+    width:100%;
+}
+
 }
 
 </style>
@@ -139,13 +182,13 @@ canvas{
 <h1>🏆 TOPPEN SALES DASHBOARD</h1>
 
 <div class="card">
-<h2 style="text-align:center;margin-bottom:20px;">Top Performer</h2>
-
-<div class="podium" id="podium">
+<div class="champion" id="championCard">
+👑 Champion
 </div>
 </div>
 
 <div class="card">
+
 <div class="summary">
 
 <div class="summary-card">
@@ -154,32 +197,50 @@ canvas{
 </div>
 
 <div class="summary-card">
-<h2 id="budgetTotal">RM0</h2>
+<h2 id="totalBudget">RM0</h2>
 <p>Total Budget</p>
 </div>
 
 <div class="summary-card">
-<h2 id="achievement">0%</h2>
+<h2 id="storeAchievement">0%</h2>
 <p>Store Achievement</p>
 </div>
 
 </div>
-</div>
 
-<div class="card">
-<div class="today" id="todayChampion">
-🔥 Today's Champion
-</div>
 </div>
 
 <div class="card">
 
-<h2 style="margin-bottom:20px">Add Daily Sales</h2>
+<h2 style="text-align:center;margin-bottom:20px">
+🥇 Top 3 Leaderboard
+</h2>
+
+<div class="podium" id="podium"></div>
+
+</div>
+
+<div class="card">
+
+<h2 style="margin-bottom:15px">
+🎯 Staff Achievement
+</h2>
+
+<div id="staffCards" class="staff-grid"></div>
+
+</div>
+
+<div class="card">
+
+<h2 style="margin-bottom:15px">
+➕ Add Daily Sales
+</h2>
 
 <table>
+
 <tr>
 <th>Staff</th>
-<th>Today's Sales</th>
+<th>Sales (RM)</th>
 </tr>
 
 <tr>
@@ -209,22 +270,23 @@ canvas{
 
 </table>
 
-<br>
-
-<button onclick="addSales()">
-Update Sales
-</button>
+<button onclick="addSales()">Update Sales</button>
 
 </div>
 
 <div class="card">
-<h2 style="margin-bottom:15px">📊 Sales Ranking</h2>
+
+<h2 style="margin-bottom:15px">
+📊 Sales Ranking
+</h2>
+
 <canvas id="salesChart"></canvas>
+
 </div>
 
 <script>
 
-let staff = [
+let defaultData = [
 
 {
 name:"Queenie",
@@ -258,61 +320,109 @@ sales:18614
 
 ];
 
+let staff =
+JSON.parse(localStorage.getItem("salesData"))
+|| defaultData;
+
 let chart;
+
+function saveData(){
+localStorage.setItem(
+"salesData",
+JSON.stringify(staff)
+);
+}
 
 function updateDashboard(){
 
 staff.sort((a,b)=>b.sales-a.sales);
 
-let podiumHTML = `
+document.getElementById("championCard").innerHTML =
+`👑 Monthly Champion<br>
+<b>${staff[0].name}</b><br>
+RM ${staff[0].sales.toLocaleString()}`;
+
+let totalSales =
+staff.reduce((sum,s)=>sum+s.sales,0);
+
+let totalBudget =
+staff.reduce((sum,s)=>sum+s.budget,0);
+
+document.getElementById("totalSales").innerHTML =
+"RM "+totalSales.toLocaleString();
+
+document.getElementById("totalBudget").innerHTML =
+"RM "+totalBudget.toLocaleString();
+
+document.getElementById("storeAchievement").innerHTML =
+((totalSales/totalBudget)*100).toFixed(1)+"%";
+
+document.getElementById("podium").innerHTML =
+
+`
 <div class="rank-box silver">
 <h2>🥈 ${staff[1].name}</h2>
-<h3>RM${staff[1].sales.toLocaleString()}</h3>
+<p>RM ${staff[1].sales.toLocaleString()}</p>
 </div>
 
 <div class="rank-box gold">
 <h2>👑 ${staff[0].name}</h2>
-<h3>RM${staff[0].sales.toLocaleString()}</h3>
+<p>RM ${staff[0].sales.toLocaleString()}</p>
 </div>
 
 <div class="rank-box bronze">
 <h2>🥉 ${staff[2].name}</h2>
-<h3>RM${staff[2].sales.toLocaleString()}</h3>
+<p>RM ${staff[2].sales.toLocaleString()}</p>
 </div>
 `;
 
-document.getElementById("podium").innerHTML = podiumHTML;
+let cards = "";
 
-let totalSales = staff.reduce((a,b)=>a+b.sales,0);
-let totalBudget = staff.reduce((a,b)=>a+b.budget,0);
+staff.forEach(s=>{
 
-document.getElementById("totalSales").innerHTML =
-"RM"+totalSales.toLocaleString();
+let ach =
+((s.sales/s.budget)*100).toFixed(1);
 
-document.getElementById("budgetTotal").innerHTML =
-"RM"+totalBudget.toLocaleString();
+cards +=
 
-document.getElementById("achievement").innerHTML =
-((totalSales/totalBudget)*100).toFixed(1)+"%";
+`
+<div class="staff-card">
 
-document.getElementById("todayChampion").innerHTML =
-`🔥 Champion : ${staff[0].name} | RM${staff[0].sales.toLocaleString()}`;
+<h3>${s.name}</h3>
+
+<p>Budget : RM ${s.budget.toLocaleString()}</p>
+
+<p>Sales : RM ${s.sales.toLocaleString()}</p>
+
+<p>Achievement : ${ach}%</p>
+
+<div class="progress">
+<div class="progress-bar"
+style="width:${Math.min(ach,100)}%">
+${ach}%
+</div>
+</div>
+
+</div>
+`;
+
+});
+
+document.getElementById("staffCards").innerHTML =
+cards;
 
 drawChart();
+saveData();
+
 }
 
 function drawChart(){
 
-let labels = staff.map(x=>x.name);
-let values = staff.map(x=>x.sales);
+let labels =
+staff.map(x=>x.name);
 
-let colors = [
-"#FFD700",
-"#C0C0C0",
-"#CD7F32",
-"#3B82F6",
-"#22C55E"
-];
+let values =
+staff.map(x=>x.sales);
 
 if(chart){
 chart.destroy();
@@ -321,19 +431,28 @@ chart.destroy();
 chart = new Chart(
 document.getElementById("salesChart"),
 {
-type:"bar",
+type:'bar',
+
 data:{
 labels:labels,
-datasets:[
-{
-label:"MTD Sales",
+
+datasets:[{
+label:'MTD Sales',
 data:values,
-backgroundColor:colors
-}
+
+backgroundColor:[
+'#FFD700',
+'#C0C0C0',
+'#CD7F32',
+'#3B82F6',
+'#22C55E'
 ]
+}]
 },
+
 options:{
 responsive:true,
+
 plugins:{
 legend:{
 display:false
@@ -342,17 +461,28 @@ display:false
 }
 }
 );
+
 }
 
 function addSales(){
 
-staff[0].sales += Number(document.getElementById("q").value || 0);
-staff[1].sales += Number(document.getElementById("f").value || 0);
-staff[2].sales += Number(document.getElementById("l").value || 0);
-staff[3].sales += Number(document.getElementById("a").value || 0);
-staff[4].sales += Number(document.getElementById("s").value || 0);
+staff.find(x=>x.name==="Queenie").sales +=
+Number(document.getElementById("q").value||0);
 
-document.querySelectorAll("input").forEach(i=>i.value="");
+staff.find(x=>x.name==="Faried").sales +=
+Number(document.getElementById("f").value||0);
+
+staff.find(x=>x.name==="Liyana").sales +=
+Number(document.getElementById("l").value||0);
+
+staff.find(x=>x.name==="Aniq").sales +=
+Number(document.getElementById("a").value||0);
+
+staff.find(x=>x.name==="Syahrul").sales +=
+Number(document.getElementById("s").value||0);
+
+document.querySelectorAll("input")
+.forEach(i=>i.value="");
 
 updateDashboard();
 
