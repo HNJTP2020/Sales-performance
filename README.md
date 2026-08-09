@@ -2,15 +2,14 @@
 <html lang="zh">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <title>Toppen KPI Dashboard</title>
 
 <style>
-
 body{
-font-family:Segoe UI,Arial;
-background:#f5f7fb;
+font-family:Segoe UI,Arial,sans-serif;
+background:#f4f6f9;
 margin:20px;
 color:#333;
 }
@@ -23,9 +22,9 @@ color:#003366;
 .card{
 background:white;
 padding:20px;
-border-radius:15px;
-box-shadow:0 2px 10px rgba(0,0,0,.1);
 margin-bottom:20px;
+border-radius:15px;
+box-shadow:0 3px 12px rgba(0,0,0,.08);
 }
 
 .kpi{
@@ -46,27 +45,27 @@ text-align:center;
 .pc{background:#16a34a;}
 .tech{background:#f97316;}
 .tm{background:#7c3aed;}
-.norton{background:#eab308;color:black;}
+.norton{background:#facc15;color:black;}
 .belkin{background:#0891b2;}
 
 input,select{
 padding:10px;
 margin:5px;
-border:1px solid #ddd;
 border-radius:8px;
+border:1px solid #ccc;
 }
 
 button{
-background:#2563eb;
-color:white;
-border:none;
 padding:10px 15px;
+border:none;
 border-radius:8px;
 cursor:pointer;
+background:#2563eb;
+color:white;
 }
 
 button:hover{
-background:#1d4ed8;
+opacity:.9;
 }
 
 table{
@@ -101,6 +100,39 @@ color:white;
 font-weight:bold;
 }
 
+.podium{
+display:flex;
+justify-content:center;
+align-items:flex-end;
+gap:20px;
+text-align:center;
+}
+
+.gold{
+background:#FFD700;
+padding:25px;
+border-radius:10px;
+}
+
+.silver{
+background:#C0C0C0;
+padding:18px;
+border-radius:10px;
+}
+
+.bronze{
+background:#CD7F32;
+color:white;
+padding:15px;
+border-radius:10px;
+}
+
+.champion{
+text-align:center;
+font-size:24px;
+color:#d97706;
+font-weight:bold;
+}
 </style>
 </head>
 
@@ -109,47 +141,49 @@ font-weight:bold;
 <h1>🏆 TOPPEN PERFORMANCE DASHBOARD</h1>
 
 <div class="card">
+<div id="championCard" class="champion">
+No Data
+</div>
+</div>
 
+<div class="card">
+<div id="podium" class="podium"></div>
+</div>
+
+<div class="card">
 <div class="kpi">
 
 <div class="kpi-box sales">
-Sales
-<br>
+Sales<br>
 <span id="totalSales">RM0</span>
 </div>
 
 <div class="kpi-box pc">
-Product Care
-<br>
+Product Care<br>
 <span id="totalPC">RM0</span>
 </div>
 
 <div class="kpi-box tech">
-TechCrew
-<br>
+TechCrew<br>
 <span id="totalTech">RM0</span>
 </div>
 
 <div class="kpi-box tm">
-Trend Micro
-<br>
+Trend Micro<br>
 <span id="totalTM">RM0</span>
 </div>
 
 <div class="kpi-box norton">
-Norton
-<br>
+Norton<br>
 <span id="totalNorton">RM0</span>
 </div>
 
 <div class="kpi-box belkin">
-Belkin
-<br>
+Belkin<br>
 <span id="totalBelkin">RM0</span>
 </div>
 
 </div>
-
 </div>
 
 <div class="card">
@@ -173,13 +207,15 @@ Belkin
 <input type="number" id="norton" placeholder="Norton">
 <input type="number" id="belkin" placeholder="Belkin">
 
-<button onclick="saveRecord()">Save</button>
+<button onclick="saveRecord()" id="saveBtn">
+Save Record
+</button>
 
 </div>
 
 <div class="card">
 
-<h2>📅 Filter</h2>
+<h2>📅 Filters</h2>
 
 <select id="monthFilter" onchange="render()">
 <option value="all">All Months</option>
@@ -206,7 +242,7 @@ Belkin
 <tr>
 <th>Rank</th>
 <th>Staff</th>
-<th>Total Sales</th>
+<th>Sales</th>
 </tr>
 </thead>
 
@@ -223,19 +259,17 @@ Belkin
 <table id="historyTable">
 
 <thead>
-
 <tr>
 <th>Date</th>
 <th>Staff</th>
 <th>Sales</th>
 <th>PC</th>
-<th>TechCrew</th>
+<th>Tech</th>
 <th>TM</th>
 <th>Norton</th>
 <th>Belkin</th>
-<th>Delete</th>
+<th>Action</th>
 </tr>
-
 </thead>
 
 <tbody></tbody>
@@ -246,9 +280,17 @@ Belkin
 
 <script>
 
+let editIndex = -1;
+
 let records =
-JSON.parse(localStorage.getItem("toppenRecords"))
-|| [];
+JSON.parse(localStorage.getItem("toppenRecords")) || [];
+
+function saveStorage(){
+localStorage.setItem(
+"toppenRecords",
+JSON.stringify(records)
+);
+}
 
 function saveRecord(){
 
@@ -260,12 +302,13 @@ alert("Please select date");
 return;
 }
 
-records.push({
+let record = {
 
 date:date,
 month:date.substring(0,7),
 
-staff:document.getElementById("staff").value,
+staff:
+document.getElementById("staff").value,
 
 sales:Number(document.getElementById("sales").value||0),
 
@@ -279,26 +322,52 @@ norton:Number(document.getElementById("norton").value||0),
 
 belkin:Number(document.getElementById("belkin").value||0)
 
-});
+};
+
+if(editIndex === -1){
+records.push(record);
+}else{
+records[editIndex] = record;
+editIndex = -1;
+document.getElementById("saveBtn").innerText =
+"Save Record";
+}
 
 saveStorage();
 populateMonths();
+clearForm();
 render();
 
 }
 
-function saveStorage(){
+function editRecord(index){
 
-localStorage.setItem(
-"toppenRecords",
-JSON.stringify(records)
-);
+let r = records[index];
+
+document.getElementById("date").value=r.date;
+document.getElementById("staff").value=r.staff;
+document.getElementById("sales").value=r.sales;
+document.getElementById("pc").value=r.pc;
+document.getElementById("tech").value=r.tech;
+document.getElementById("tm").value=r.tm;
+document.getElementById("norton").value=r.norton;
+document.getElementById("belkin").value=r.belkin;
+
+editIndex=index;
+
+document.getElementById("saveBtn").innerText =
+"Update Record";
+
+window.scrollTo({
+top:0,
+behavior:"smooth"
+});
 
 }
 
 function deleteRecord(index){
 
-if(confirm("Delete this record?")){
+if(confirm("Delete Record?")){
 
 records.splice(index,1);
 
@@ -310,10 +379,22 @@ render();
 
 }
 
+function clearForm(){
+
+document.getElementById("sales").value="";
+document.getElementById("pc").value="";
+document.getElementById("tech").value="";
+document.getElementById("tm").value="";
+document.getElementById("norton").value="";
+document.getElementById("belkin").value="";
+
+}
+
 function populateMonths(){
 
-let months =
-[...new Set(records.map(x=>x.month))];
+let months=[
+...new Set(records.map(r=>r.month))
+];
 
 let select =
 document.getElementById("monthFilter");
@@ -341,19 +422,13 @@ let staff =
 document.getElementById("staffFilter").value;
 
 let filtered =
-records.filter(r=>{
+records.filter(r=>
 
-let okMonth =
-month==="all" ||
-r.month===month;
+(month==="all" || r.month===month)
+&&
+(staff==="all" || r.staff===staff)
 
-let okStaff =
-staff==="all" ||
-r.staff===staff;
-
-return okMonth && okStaff;
-
-});
+);
 
 renderHistory(filtered);
 renderRanking(filtered);
@@ -372,12 +447,12 @@ body.innerHTML="";
 
 data.forEach((r,index)=>{
 
-body.innerHTML += `
+body.innerHTML +=
 
+`
 <tr>
 
 <td>${r.date}</td>
-
 <td>${r.staff}</td>
 
 <td>${r.sales}</td>
@@ -393,13 +468,16 @@ body.innerHTML += `
 <td>${r.belkin}</td>
 
 <td>
+<button onclick="editRecord(${index})">
+✏️
+</button>
+
 <button onclick="deleteRecord(${index})">
-🗑
+🗑️
 </button>
 </td>
 
 </tr>
-
 `;
 
 });
@@ -408,7 +486,7 @@ body.innerHTML += `
 
 function renderRanking(data){
 
-let totals = {};
+let totals={};
 
 data.forEach(r=>{
 
@@ -438,23 +516,49 @@ if(i===0) cls="rank1";
 if(i===1) cls="rank2";
 if(i===2) cls="rank3";
 
-body.innerHTML += `
+body.innerHTML +=
 
+`
 <tr class="${cls}">
-
 <td>${i+1}</td>
-
 <td>${r[0]}</td>
-
-<td>
-RM ${r[1].toLocaleString()}
-</td>
-
+<td>RM ${r[1].toLocaleString()}</td>
 </tr>
-
 `;
 
 });
+
+if(ranking.length>0){
+
+document.getElementById(
+"championCard"
+).innerHTML=
+
+`👑 SALES CHAMPION<br>
+${ranking[0][0]}<br>
+RM ${ranking[0][1].toLocaleString()}`;
+
+}
+
+if(ranking.length>=3){
+
+document.getElementById("podium").innerHTML=
+
+`
+<div class="silver">
+🥈<br>${ranking[1][0]}
+</div>
+
+<div class="gold">
+👑<br>${ranking[0][0]}
+</div>
+
+<div class="bronze">
+🥉<br>${ranking[2][0]}
+</div>
+`;
+
+}
 
 }
 
